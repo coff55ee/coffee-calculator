@@ -23,7 +23,7 @@ label{display:block;color:var(--muted);font-size:clamp(17px,3.7vw,21px);font-wei
 #beans{display:block;width:100%;height:71px;padding:0 25px;border:2px solid #d8d8d5;border-radius:100px;background:#fff;color:var(--text);font:inherit;font-size:27px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
 .field{margin:0 0 19px}
 .select{display:block;width:100%;height:50px;border:1.5px solid var(--border);border-radius:12px;background:#fff;padding:0 13px;font:inherit;font-size:17px;color:var(--text)}
-.settings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.settings{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
 .small-label{font-size:15px;margin-bottom:8px}
 .summary{background:var(--soft);border-radius:20px;padding:19px 22px 20px;margin-top:24px}
 .summary-label{font-size:18px;color:var(--muted);margin-bottom:6px}
@@ -86,14 +86,6 @@ tbody tr:last-child td{border-bottom:none}
   <section id="panel-press" role="tabpanel" aria-labelledby="tab-press" hidden>
     <div class="settings">
       <div>
-        <label class="small-label" for="roast">豆の焙煎度</label>
-        <select class="select" id="roast">
-          <option value="medium">中煎り</option>
-          <option value="mediumdark" selected>中深煎り</option>
-          <option value="dark">深煎り</option>
-        </select>
-      </div>
-      <div>
         <label class="small-label" for="strength">濃さの調整</label>
         <select class="select" id="strength">
           <option value="15.5">やや濃い (1:15.5)</option>
@@ -128,13 +120,11 @@ tbody tr:last-child td{border-bottom:none}
   var pressLabel=document.getElementById('press-label');
   var pressPour=document.getElementById('press-pour');
   var pressTemp=document.getElementById('press-temp');
-  var roast=document.getElementById('roast');
   var strength=document.getElementById('strength');
   var error=document.getElementById('inputError');
   var rows=Array.prototype.slice.call(schedule.querySelectorAll('tr'));
   var times=['0:00','0:40','1:20','2:00'];
   var ratios=[.15,.40,.70,1];
-  var temps={medium:92,mediumdark:90,dark:88};
   function r1(n){return Math.round((n + Number.EPSILON)*10)/10;}
   function gram(n){return (Math.abs(n-Math.round(n))<.00001?String(Math.round(n)):n.toFixed(1))+'g';}
   function render(){
@@ -162,7 +152,7 @@ tbody tr:last-child td{border-bottom:none}
     pressLabel.textContent='総湯量｜粉湯比 1:'+strength.value;
     pressTotal.textContent=gram(water);
     pressPour.textContent=gram(water);
-    pressTemp.textContent='推奨湯温：'+temps[roast.value]+'℃　｜　挽き目：中粗挽き';
+    pressTemp.textContent='推奨湯温：90℃　｜　挽き目：中粗挽き';
   }
   var tabs=[document.getElementById('tab-drip'),document.getElementById('tab-press')];
   var panels=[document.getElementById('panel-drip'),document.getElementById('panel-press')];
@@ -179,7 +169,7 @@ tbody tr:last-child td{border-bottom:none}
     tab.addEventListener('click',function(){selectTab(i,false);});
     tab.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();selectTab((i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length,true);}});
   });
-  [input,roast,strength].forEach(function(control){control.addEventListener('input',render);control.addEventListener('change',render);});
+  [input,strength].forEach(function(control){control.addEventListener('input',render);control.addEventListener('change',render);});
   render();
 })();
 </script>

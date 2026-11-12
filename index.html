@@ -42,10 +42,35 @@ tbody tr:last-child td{border-bottom:none}
 [hidden]{display:none!important}
 @media(max-width:440px){.card{padding:24px 16px 23px;border-radius:22px}h1{margin-bottom:22px}#beans{height:70px;padding:0 23px;font-size:25px}.summary{margin-top:22px;padding:18px 19px}th,td{padding:15px 1px}}
 @media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}.press-steps li{grid-template-columns:55px 1fr;gap:8px;font-size:14px}}
+/* Mobile: compact French press view, preserving the hand-drip layout. */
+@media (max-width:440px){
+  .card.press-mode{padding:17px 16px 17px}
+  .card.press-mode h1{font-size:clamp(24px,5.4vw,28px);margin-bottom:15px}
+  .card.press-mode .tabs{margin-bottom:16px;padding:4px;border-radius:15px}
+  .card.press-mode .tab{min-height:44px;padding:10px 4px;font-size:clamp(14px,3.4vw,16px)}
+  .card.press-mode .field{margin-bottom:0}
+  .card.press-mode label{font-size:16px;margin-bottom:8px}
+  .card.press-mode #beans{height:54px;padding:0 20px;font-size:24px}
+  .card.press-mode .summary{margin-top:16px;padding:13px 17px;border-radius:16px}
+  .card.press-mode .summary-label{font-size:15px;margin-bottom:3px}
+  .card.press-mode .summary-value{font-size:38px;line-height:1.1}
+  .card.press-mode h2{font-size:20px;margin:20px 0 9px}
+  .card.press-mode .press-steps li{grid-template-columns:48px minmax(0,1fr);gap:10px;padding:10px 0;font-size:14px;line-height:1.48}
+  .card.press-mode .step-time{font-size:15px}
+}
+@media (max-width:440px) and (max-height:720px){
+  .card.press-mode{padding-top:13px;padding-bottom:13px}
+  .card.press-mode h1{margin-bottom:11px}
+  .card.press-mode .tabs{margin-bottom:12px}
+  .card.press-mode .summary{margin-top:12px;padding:11px 15px}
+  .card.press-mode h2{margin:15px 0 6px}
+  .card.press-mode .press-steps li{padding:7px 0}
+}
+
 </style>
 </head>
 <body>
-<main class="card">
+<main class="card" id="calculator-card">
   <h1>コーヒー抽出計算機</h1>
   <div class="tabs" role="tablist" aria-label="抽出方法を選択">
     <button class="tab" id="tab-drip" role="tab" aria-controls="panel-drip" aria-selected="true" type="button">ハンドドリップ</button>
@@ -81,10 +106,10 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <h2>フレンチプレスの抽出手順</h2>
     <ol class="press-steps">
-      <li><div class="step-time">準備</div><div class="step-desc">本体を温めて湯を捨て、挽いた豆を入れてスケールを0gにします。</div></li>
-      <li><div class="step-time">0:00</div><div class="step-desc"><strong id="press-pour">330g</strong>のお湯を一度に注ぎます。粉全体を濡らし、必要ならスプーンで軽く混ぜます。</div></li>
-      <li><div class="step-time">4:00</div><div class="step-desc">表面の粉の層を優しく崩し、浮いた泡や粉を必要に応じて取り除きます。</div></li>
-      <li><div class="step-time">7:00</div><div class="step-desc">粉が沈んだら、プランジャーを液面付近まで静かに下げ、微粉を巻き上げないようにカップに注ぎます。</div></li>
+      <li><div class="step-time">準備</div><div class="step-desc">本体を温めて湯を捨て、豆を入れ0gに。</div></li>
+      <li><div class="step-time">0:00</div><div class="step-desc"><strong id="press-pour">330g</strong>を一度に注ぐ。粉全体を濡らし、必要なら軽く混ぜる。</div></li>
+      <li><div class="step-time">4:00</div><div class="step-desc">表面の粉を優しく崩す。泡や浮いた粉は必要なら除く。</div></li>
+      <li><div class="step-time">7:00</div><div class="step-desc">プランジャーを液面付近まで静かに下げ、ゆっくりカップへ注ぐ。</div></li>
     </ol>
   </section>
   <noscript><p class="error">自動計算にはJavaScriptが必要です。Safariなどで開いてください。</p></noscript>
@@ -135,6 +160,7 @@ tbody tr:last-child td{border-bottom:none}
       tabs[i].tabIndex=active?0:-1;
       panels[i].hidden=!active;
     }
+    document.getElementById("calculator-card").classList.toggle("press-mode",which===1);
     if(shouldFocus)tabs[which].focus();
   }
   tabs.forEach(function(tab,i){

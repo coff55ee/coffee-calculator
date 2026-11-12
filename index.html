@@ -7,47 +7,68 @@
 <meta name="theme-color" content="#f7f7f5">
 <title>コーヒー抽出計算機</title>
 <style>
-  :root{color-scheme:light;--bg:#f7f7f5;--paper:#fff;--text:#131313;--muted:#696966;--border:#dddcd8;--soft:#f1f1ef}
-  *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-  body{margin:0;min-width:290px;background:var(--bg);color:var(--text);padding:14px 12px 28px;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
-  .card{max-width:720px;margin:0 auto;padding:27px 28px 29px;background:var(--paper);border:1px solid var(--border);border-radius:25px}
-  h1{font-size:clamp(25px,5.2vw,35px);line-height:1.25;letter-spacing:.008em;font-weight:800;margin:0 0 31px}
-  label{display:block;color:var(--muted);font-size:clamp(18px,4vw,23px);font-weight:700;margin-bottom:14px}
-  #beans{display:block;width:100%;height:77px;padding:0 27px;border:2px solid #d8d8d5;border-radius:100px;background:#fff;color:var(--text);font:inherit;font-size:28px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
-  #beans:focus{border-color:#777}
-  .summary{background:var(--soft);border-radius:20px;padding:19px 22px 20px;margin-top:29px}
-  .summary-label{font-size:18px;color:var(--muted);margin-bottom:6px}
-  .summary-value{font-size:clamp(38px,7vw,51px);font-weight:800;line-height:1.18;font-variant-numeric:tabular-nums}
-  h2{font-size:clamp(22px,4.5vw,29px);font-weight:800;margin:32px 0 19px}
-  table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;table-layout:fixed}
-  th,td{padding:17px 4px;border-bottom:1px solid #dededb;font-size:clamp(15px,3.4vw,23px);white-space:nowrap}
-  th{border-bottom:2px solid var(--border);font-weight:750;text-align:left}
-  th:nth-child(1),td:nth-child(1){width:25%}
-  th:nth-child(2),td:nth-child(2){width:19%}
-  th:nth-child(3),td:nth-child(3){width:28%;text-align:right}
-  th:nth-child(4),td:nth-child(4){width:28%;text-align:right}
-  tbody tr:last-child td{border-bottom:none}
-  .note{display:flex;gap:12px;margin:24px 0 0;color:var(--muted);line-height:1.65;font-size:clamp(14px,3.3vw,17px)}
-  .clock{flex:0 0 auto;font-size:21px;line-height:1.3}
-  .error{margin:12px 0 0;font-size:14px;color:#a34531;line-height:1.5}
-  .nojs{margin-top:18px;color:#a34531;font-size:14px;line-height:1.65}
-  @media(max-width:440px){.card{padding:24px 16px 23px;border-radius:22px}h1{margin-bottom:27px}#beans{height:70px;padding:0 23px;font-size:25px}.summary{margin-top:24px;padding:18px 19px}h2{margin-top:30px}th,td{padding:15px 1px}}
-  @media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}.note{font-size:13px}}
+:root {color-scheme:light;--bg:#f7f7f5;--paper:#fff;--text:#131313;--muted:#696966;--border:#dddcd8;--soft:#f1f1ef;--accent:#474c41}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-width:290px;background:var(--bg);color:var(--text);padding:14px 12px 36px;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+.card{max-width:720px;margin:0 auto;padding:27px 28px 31px;background:var(--paper);border:1px solid var(--border);border-radius:25px}
+h1{font-size:clamp(25px,5.2vw,35px);line-height:1.25;letter-spacing:.008em;font-weight:800;margin:0 0 23px}
+h2{font-size:clamp(21px,4.5vw,27px);font-weight:800;margin:28px 0 15px}
+h3{font-size:19px;margin:24px 0 12px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--soft);padding:5px;border-radius:17px;margin-bottom:26px}
+.tab{appearance:none;border:0;border-radius:13px;background:transparent;color:var(--muted);font:inherit;font-size:clamp(15px,3.2vw,18px);font-weight:700;padding:14px 5px;cursor:pointer;min-height:48px}
+.tab[aria-selected="true"]{color:var(--text);background:#fff;box-shadow:0 1px 5px #00000013}
+.tab:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
+label{display:block;color:var(--muted);font-size:clamp(17px,3.7vw,21px);font-weight:700;margin-bottom:13px}
+#beans{display:block;width:100%;height:71px;padding:0 25px;border:2px solid #d8d8d5;border-radius:100px;background:#fff;color:var(--text);font:inherit;font-size:27px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
+.field{margin:0 0 19px}
+.select{display:block;width:100%;height:50px;border:1.5px solid var(--border);border-radius:12px;background:#fff;padding:0 13px;font:inherit;font-size:17px;color:var(--text)}
+.settings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.small-label{font-size:15px;margin-bottom:8px}
+.summary{background:var(--soft);border-radius:20px;padding:19px 22px 20px;margin-top:24px}
+.summary-label{font-size:18px;color:var(--muted);margin-bottom:6px}
+.summary-value{font-size:clamp(38px,7vw,51px);font-weight:800;line-height:1.18;font-variant-numeric:tabular-nums}
+.secondary-info{font-size:15px;color:var(--muted);margin:9px 0 0;line-height:1.6}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;table-layout:fixed}
+th,td{padding:17px 4px;border-bottom:1px solid #dededb;font-size:clamp(15px,3.4vw,22px);white-space:nowrap}
+th{border-bottom:2px solid var(--border);font-weight:750;text-align:left}
+th:nth-child(1),td:nth-child(1){width:25%}
+th:nth-child(2),td:nth-child(2){width:19%}
+th:nth-child(3),td:nth-child(3){width:28%;text-align:right}
+th:nth-child(4),td:nth-child(4){width:28%;text-align:right}
+tbody tr:last-child td{border-bottom:none}
+.note{display:flex;gap:11px;margin:21px 0 0;color:var(--muted);line-height:1.65;font-size:clamp(14px,3.3vw,17px)}
+.clock{flex:0 0 auto;font-size:19px;line-height:1.3}
+.error{margin:12px 0 0;font-size:14px;color:#a34531;line-height:1.5}
+.press-steps{margin:0;padding:0;list-style:none;counter-reset:press}
+.press-steps li{display:grid;grid-template-columns:63px 1fr;gap:12px;border-bottom:1px solid var(--border);padding:15px 0;line-height:1.6;font-size:16px}
+.press-steps li:last-child{border-bottom:0}
+.step-time{font-weight:800;font-variant-numeric:tabular-nums;font-size:17px;white-space:nowrap}
+.step-desc strong{font-weight:750}
+.method-hint{font-size:15px;color:var(--muted);line-height:1.7;margin:0}
+[hidden]{display:none!important}
+@media(max-width:440px){.card{padding:24px 16px 23px;border-radius:22px}h1{margin-bottom:22px}#beans{height:70px;padding:0 23px;font-size:25px}.summary{margin-top:22px;padding:18px 19px}th,td{padding:15px 1px}.settings{gap:8px}.select{font-size:15px;padding:0 7px}}
+@media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}.note{font-size:13px}.press-steps li{grid-template-columns:55px 1fr;gap:8px;font-size:14px}}
 </style>
 </head>
 <body>
-  <main class="card">
-    <h1>コーヒー抽出計算機</h1>
+<main class="card">
+  <h1>コーヒー抽出計算機</h1>
+  <div class="tabs" role="tablist" aria-label="抽出方法を選択">
+    <button class="tab" id="tab-drip" role="tab" aria-controls="panel-drip" aria-selected="true" type="button">ハンドドリップ</button>
+    <button class="tab" id="tab-press" role="tab" aria-controls="panel-press" aria-selected="false" tabindex="-1" type="button">フレンチプレス</button>
+  </div>
+  <div class="field">
     <label for="beans">コーヒー豆の重さ (g)</label>
     <input id="beans" type="number" inputmode="decimal" min="1" max="100" step="0.1" value="20" aria-describedby="inputError">
-    <div id="inputError" class="error" role="status" hidden></div>
+    <p id="inputError" class="error" role="status" hidden></p>
+  </div>
 
+  <section id="panel-drip" role="tabpanel" aria-labelledby="tab-drip">
     <div class="summary" aria-live="polite" aria-atomic="true">
-      <div class="summary-label">総湯量</div>
-      <div class="summary-value" id="total">310g</div>
+      <div class="summary-label">総湯量｜粉湯比 1:15.5</div>
+      <div class="summary-value" id="drip-total">310g</div>
     </div>
-
     <h2>4投の抽出スケジュール</h2>
     <table aria-label="4投の抽出スケジュール">
       <thead><tr><th scope="col">投湯</th><th scope="col">開始</th><th scope="col">注ぐ量</th><th scope="col">累計</th></tr></thead>
@@ -58,58 +79,107 @@
         <tr><td>4投目</td><td>2:00</td><td>93g</td><td>310g</td></tr>
       </tbody>
     </table>
+    <p class="note"><span class="clock" aria-hidden="true">◷</span><span id="drip-note">抽出完了の目安：2分45秒〜3分45秒（豆20gの場合。器具や挽き目によって変わります）</span></p>
+    <p class="method-hint" style="margin-top:16px">注ぎ方：中心〜中間に小さな円を描くように穏やかに注ぎます。フィルターの外周に直接お湯を当てすぎないようにしてください。</p>
+  </section>
 
-    <p class="note"><span class="clock" aria-hidden="true">◷</span><span id="note">抽出完了の目安：2分45秒〜3分45秒（豆20gの場合。器具や挽き目によって変わります）</span></p>
-    <noscript><p class="nojs">この画面では自動計算できません。JavaScriptが動作するブラウザ（Safariなど）で開いてください。表示されている値は豆20gの例です。</p></noscript>
-  </main>
+  <section id="panel-press" role="tabpanel" aria-labelledby="tab-press" hidden>
+    <div class="settings">
+      <div>
+        <label class="small-label" for="roast">豆の焙煎度</label>
+        <select class="select" id="roast">
+          <option value="medium">中煎り</option>
+          <option value="mediumdark" selected>中深煎り</option>
+          <option value="dark">深煎り</option>
+        </select>
+      </div>
+      <div>
+        <label class="small-label" for="strength">濃さの調整</label>
+        <select class="select" id="strength">
+          <option value="15.5">やや濃い (1:15.5)</option>
+          <option value="16.5" selected>標準 (1:16.5)</option>
+          <option value="17.5">すっきり (1:17.5)</option>
+        </select>
+      </div>
+    </div>
+    <div class="summary" aria-live="polite" aria-atomic="true">
+      <div class="summary-label" id="press-label">総湯量｜粉湯比 1:16.5</div>
+      <div class="summary-value" id="press-total">330g</div>
+      <div class="secondary-info" id="press-temp">推奨湯温：90℃　｜　挽き目：中粗挽き</div>
+    </div>
+    <h2>フレンチプレスの抽出手順</h2>
+    <ol class="press-steps">
+      <li><div class="step-time">準備</div><div class="step-desc">本体を温めて湯を捨て、挽いた豆を入れてスケールを0gにします。</div></li>
+      <li><div class="step-time">0:00</div><div class="step-desc"><strong id="press-pour">330g</strong>のお湯を一度に注ぎます。粉全体を濡らし、必要ならスプーンで軽く混ぜます。</div></li>
+      <li><div class="step-time">4:00</div><div class="step-desc">表面の粉の層を優しく崩し、浮いた泡や粉を必要に応じて取り除きます。</div></li>
+      <li><div class="step-time">7:00</div><div class="step-desc">粉が沈んだら、プランジャーを液面付近まで静かに下げ、微粉を巻き上げないようにカップに注ぎます。</div></li>
+    </ol>
+  </section>
+  <noscript><p class="error">自動計算にはJavaScriptが必要です。Safariなどで開いてください。</p></noscript>
+</main>
 <script>
 (function () {
   'use strict';
-  var input = document.getElementById('beans');
-  var totalEl = document.getElementById('total');
-  var schedule = document.getElementById('schedule');
-  var note = document.getElementById('note');
-  var error = document.getElementById('inputError');
-  var rows = Array.prototype.slice.call(schedule.querySelectorAll('tr'));
-  var times = ['0:00', '0:40', '1:20', '2:00'];
-  var ratios = [0.15, 0.40, 0.70, 1.00];
-  function r1(n){return Math.round((n + Number.EPSILON) * 10) / 10;}
-  function gram(n){return (Math.abs(n - Math.round(n)) < 0.00001 ? String(Math.round(n)) : n.toFixed(1)) + 'g';}
-  function resetInvalid(){
-    totalEl.textContent = '—';
-    for (var i = 0; i < 4; i++) {
-      rows[i].cells[2].textContent = '—';
-      rows[i].cells[3].textContent = '—';
-    }
-    note.textContent = '豆量を入力すると注湯量を表示します。';
-    error.hidden = false;
-    error.textContent = '豆量は1〜100gで入力してください。';
-  }
+  var input=document.getElementById('beans');
+  var dripTotal=document.getElementById('drip-total');
+  var schedule=document.getElementById('schedule');
+  var dripNote=document.getElementById('drip-note');
+  var pressTotal=document.getElementById('press-total');
+  var pressLabel=document.getElementById('press-label');
+  var pressPour=document.getElementById('press-pour');
+  var pressTemp=document.getElementById('press-temp');
+  var roast=document.getElementById('roast');
+  var strength=document.getElementById('strength');
+  var error=document.getElementById('inputError');
+  var rows=Array.prototype.slice.call(schedule.querySelectorAll('tr'));
+  var times=['0:00','0:40','1:20','2:00'];
+  var ratios=[.15,.40,.70,1];
+  var temps={medium:92,mediumdark:90,dark:88};
+  function r1(n){return Math.round((n + Number.EPSILON)*10)/10;}
+  function gram(n){return (Math.abs(n-Math.round(n))<.00001?String(Math.round(n)):n.toFixed(1))+'g';}
   function render(){
-    var s = input.value.trim();
-    var beans = Number(s);
-    if (!s || !Number.isFinite(beans) || beans < 1 || beans > 100) {
-      resetInvalid();
+    var s=input.value.trim(), beans=Number(s), valid=s!==''&&Number.isFinite(beans)&&beans>=1&&beans<=100;
+    error.hidden=valid;
+    error.textContent=valid?'':'豆量は1〜100gで入力してください。';
+    if(!valid){
+      dripTotal.textContent='—';pressTotal.textContent='—';pressPour.textContent='—';
+      rows.forEach(function(row){row.cells[2].textContent='—';row.cells[3].textContent='—';});
+      dripNote.textContent='豆量を入力すると注湯量を表示します。';
       return;
     }
-    error.hidden = true;
-    var total = r1(beans * 15.5);
-    var last = 0;
-    totalEl.textContent = gram(total);
-    for (var i = 0; i < 4; i++) {
-      var cumulative = (i === 3 ? total : r1(total * ratios[i]));
-      var quantity = r1(cumulative - last);
-      rows[i].cells[0].textContent = (i + 1) + '投目';
-      rows[i].cells[1].textContent = times[i];
-      rows[i].cells[2].textContent = gram(quantity);
-      rows[i].cells[3].textContent = gram(cumulative);
-      last = cumulative;
+    var dripWater=r1(beans*15.5),last=0;
+    dripTotal.textContent=gram(dripWater);
+    for(var i=0;i<4;i++){
+      var cumulative=i===3?dripWater:r1(dripWater*ratios[i]);
+      rows[i].cells[0].textContent=(i+1)+'投目';
+      rows[i].cells[1].textContent=times[i];
+      rows[i].cells[2].textContent=gram(r1(cumulative-last));
+      rows[i].cells[3].textContent=gram(cumulative);
+      last=cumulative;
     }
-    var timeText = beans <= 15 ? '2分30秒〜3分30秒' : '2分45秒〜3分45秒';
-    note.textContent = '抽出完了の目安：' + timeText + '（豆' + gram(beans) + 'の場合。器具や挽き目によって変わります）';
+    dripNote.textContent='抽出完了の目安：'+(beans<=15?'2分30秒〜3分30秒':'2分45秒〜3分45秒')+'（豆'+gram(beans)+'の場合。器具や挽き目によって変わります）';
+    var ratio=Number(strength.value),water=r1(beans*ratio);
+    pressLabel.textContent='総湯量｜粉湯比 1:'+strength.value;
+    pressTotal.textContent=gram(water);
+    pressPour.textContent=gram(water);
+    pressTemp.textContent='推奨湯温：'+temps[roast.value]+'℃　｜　挽き目：中粗挽き';
   }
-  input.addEventListener('input', render);
-  input.addEventListener('change', render);
+  var tabs=[document.getElementById('tab-drip'),document.getElementById('tab-press')];
+  var panels=[document.getElementById('panel-drip'),document.getElementById('panel-press')];
+  function selectTab(which,shouldFocus){
+    for(var i=0;i<tabs.length;i++){
+      var active=i===which;
+      tabs[i].setAttribute('aria-selected',active?'true':'false');
+      tabs[i].tabIndex=active?0:-1;
+      panels[i].hidden=!active;
+    }
+    if(shouldFocus)tabs[which].focus();
+  }
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){selectTab(i,false);});
+    tab.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();selectTab((i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length,true);}});
+  });
+  [input,roast,strength].forEach(function(control){control.addEventListener('input',render);control.addEventListener('change',render);});
   render();
 })();
 </script>

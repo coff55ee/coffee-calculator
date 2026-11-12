@@ -18,13 +18,10 @@ h3{font-size:19px;margin:24px 0 12px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--soft);padding:5px;border-radius:17px;margin-bottom:26px}
 .tab{appearance:none;border:0;border-radius:13px;background:transparent;color:var(--muted);font:inherit;font-size:clamp(15px,3.2vw,18px);font-weight:700;padding:14px 5px;cursor:pointer;min-height:48px}
 .tab[aria-selected="true"]{color:var(--text);background:#fff;box-shadow:0 1px 5px #00000013}
-.tab:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
+.tab:focus-visible,input:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
 label{display:block;color:var(--muted);font-size:clamp(17px,3.7vw,21px);font-weight:700;margin-bottom:13px}
 #beans{display:block;width:100%;height:71px;padding:0 25px;border:2px solid #d8d8d5;border-radius:100px;background:#fff;color:var(--text);font:inherit;font-size:27px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
 .field{margin:0 0 19px}
-.select{display:block;width:100%;height:50px;border:1.5px solid var(--border);border-radius:12px;background:#fff;padding:0 13px;font:inherit;font-size:17px;color:var(--text)}
-.settings{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
-.small-label{font-size:15px;margin-bottom:8px}
 .summary{background:var(--soft);border-radius:20px;padding:19px 22px 20px;margin-top:24px}
 .summary-label{font-size:18px;color:var(--muted);margin-bottom:6px}
 .summary-value{font-size:clamp(38px,7vw,51px);font-weight:800;line-height:1.18;font-variant-numeric:tabular-nums}
@@ -37,18 +34,15 @@ th:nth-child(2),td:nth-child(2){width:19%}
 th:nth-child(3),td:nth-child(3){width:28%;text-align:right}
 th:nth-child(4),td:nth-child(4){width:28%;text-align:right}
 tbody tr:last-child td{border-bottom:none}
-.note{display:flex;gap:11px;margin:21px 0 0;color:var(--muted);line-height:1.65;font-size:clamp(14px,3.3vw,17px)}
-.clock{flex:0 0 auto;font-size:19px;line-height:1.3}
 .error{margin:12px 0 0;font-size:14px;color:#a34531;line-height:1.5}
 .press-steps{margin:0;padding:0;list-style:none;counter-reset:press}
 .press-steps li{display:grid;grid-template-columns:63px 1fr;gap:12px;border-bottom:1px solid var(--border);padding:15px 0;line-height:1.6;font-size:16px}
 .press-steps li:last-child{border-bottom:0}
 .step-time{font-weight:800;font-variant-numeric:tabular-nums;font-size:17px;white-space:nowrap}
 .step-desc strong{font-weight:750}
-.method-hint{font-size:15px;color:var(--muted);line-height:1.7;margin:0}
 [hidden]{display:none!important}
-@media(max-width:440px){.card{padding:24px 16px 23px;border-radius:22px}h1{margin-bottom:22px}#beans{height:70px;padding:0 23px;font-size:25px}.summary{margin-top:22px;padding:18px 19px}th,td{padding:15px 1px}.settings{gap:8px}.select{font-size:15px;padding:0 7px}}
-@media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}.note{font-size:13px}.press-steps li{grid-template-columns:55px 1fr;gap:8px;font-size:14px}}
+@media(max-width:440px){.card{padding:24px 16px 23px;border-radius:22px}h1{margin-bottom:22px}#beans{height:70px;padding:0 23px;font-size:25px}.summary{margin-top:22px;padding:18px 19px}th,td{padding:15px 1px}}
+@media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}.press-steps li{grid-template-columns:55px 1fr;gap:8px;font-size:14px}}
 </style>
 </head>
 <body>
@@ -79,23 +73,11 @@ tbody tr:last-child td{border-bottom:none}
         <tr><td>4投目</td><td>2:00</td><td>93g</td><td>310g</td></tr>
       </tbody>
     </table>
-    <p class="note"><span class="clock" aria-hidden="true">◷</span><span id="drip-note">抽出完了の目安：2分45秒〜3分45秒（豆20gの場合。器具や挽き目によって変わります）</span></p>
-    <p class="method-hint" style="margin-top:16px">注ぎ方：中心〜中間に小さな円を描くように穏やかに注ぎます。フィルターの外周に直接お湯を当てすぎないようにしてください。</p>
   </section>
 
   <section id="panel-press" role="tabpanel" aria-labelledby="tab-press" hidden>
-    <div class="settings">
-      <div>
-        <label class="small-label" for="strength">濃さの調整</label>
-        <select class="select" id="strength">
-          <option value="15.5">やや濃い (1:15.5)</option>
-          <option value="16.5" selected>標準 (1:16.5)</option>
-          <option value="17.5">すっきり (1:17.5)</option>
-        </select>
-      </div>
-    </div>
     <div class="summary" aria-live="polite" aria-atomic="true">
-      <div class="summary-label" id="press-label">総湯量｜粉湯比 1:16.5</div>
+      <div class="summary-label">総湯量｜粉湯比 1:16.5</div>
       <div class="summary-value" id="press-total">330g</div>
       <div class="secondary-info" id="press-temp">推奨湯温：90℃　｜　挽き目：中粗挽き</div>
     </div>
@@ -115,12 +97,9 @@ tbody tr:last-child td{border-bottom:none}
   var input=document.getElementById('beans');
   var dripTotal=document.getElementById('drip-total');
   var schedule=document.getElementById('schedule');
-  var dripNote=document.getElementById('drip-note');
   var pressTotal=document.getElementById('press-total');
-  var pressLabel=document.getElementById('press-label');
   var pressPour=document.getElementById('press-pour');
   var pressTemp=document.getElementById('press-temp');
-  var strength=document.getElementById('strength');
   var error=document.getElementById('inputError');
   var rows=Array.prototype.slice.call(schedule.querySelectorAll('tr'));
   var times=['0:00','0:40','1:20','2:00'];
@@ -134,7 +113,6 @@ tbody tr:last-child td{border-bottom:none}
     if(!valid){
       dripTotal.textContent='—';pressTotal.textContent='—';pressPour.textContent='—';
       rows.forEach(function(row){row.cells[2].textContent='—';row.cells[3].textContent='—';});
-      dripNote.textContent='豆量を入力すると注湯量を表示します。';
       return;
     }
     var dripWater=r1(beans*15.5),last=0;
@@ -147,9 +125,7 @@ tbody tr:last-child td{border-bottom:none}
       rows[i].cells[3].textContent=gram(cumulative);
       last=cumulative;
     }
-    dripNote.textContent='抽出完了の目安：'+(beans<=15?'2分30秒〜3分30秒':'2分45秒〜3分45秒')+'（豆'+gram(beans)+'の場合。器具や挽き目によって変わります）';
-    var ratio=Number(strength.value),water=r1(beans*ratio);
-    pressLabel.textContent='総湯量｜粉湯比 1:'+strength.value;
+    var water=r1(beans*16.5);
     pressTotal.textContent=gram(water);
     pressPour.textContent=gram(water);
     pressTemp.textContent='推奨湯温：90℃　｜　挽き目：中粗挽き';
@@ -169,7 +145,8 @@ tbody tr:last-child td{border-bottom:none}
     tab.addEventListener('click',function(){selectTab(i,false);});
     tab.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();selectTab((i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length,true);}});
   });
-  [input,strength].forEach(function(control){control.addEventListener('input',render);control.addEventListener('change',render);});
+  input.addEventListener('input',render);
+  input.addEventListener('change',render);
   render();
 })();
 </script>

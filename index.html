@@ -36,10 +36,15 @@ tbody tr:last-child td{border-bottom:none}
 .error{margin:12px 0 0;font-size:14px;color:#a34531;line-height:1.5}
 [hidden]{display:none!important}
 @media(max-width:440px){.card{padding:24px 16px 23px;border-radius:22px}h1{margin-bottom:22px}#beans{height:70px;padding:0 23px;font-size:25px}.summary{margin-top:22px;padding:18px 19px}th,td{padding:15px 1px}}
-@media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}.press-table th:first-child,.press-table td:first-child{width:22%;text-align:left;white-space:nowrap}
-.press-table th:nth-child(2),.press-table td:nth-child(2){width:78%;text-align:left;white-space:normal;overflow-wrap:anywhere}
-.press-table td{font-variant-numeric:tabular-nums}
-@media(max-width:350px){.press-table th,.press-table td{font-size:14px}}
+@media(max-width:350px){.card{padding:20px 12px}th,td{font-size:14px}/* Separate grid prevents the four-column hand-drip table rules from affecting French press. */
+.press-grid{width:100%;min-width:0;font-variant-numeric:tabular-nums}
+.press-grid-row{display:grid;grid-template-columns:22% minmax(0,1fr);align-items:center;width:100%;min-width:0;border-bottom:1px solid #dededb}
+.press-grid-row:last-child{border-bottom:0}
+.press-grid-head{border-bottom:2px solid var(--border);font-weight:750}
+.press-grid-row>[role]{min-width:0;padding:17px 4px;font-size:clamp(15px,3.4vw,22px);line-height:1.35}
+.press-grid-row>[role]:last-child{white-space:normal;overflow-wrap:anywhere;word-break:normal}
+.press-grid-row>[role]:first-child{white-space:nowrap}
+@media(max-width:350px){.press-grid-row>[role]{font-size:14px;padding:14px 3px}}
 </style>
 </head>
 <body>
@@ -78,15 +83,23 @@ tbody tr:last-child td{border-bottom:none}
       <div class="summary-value" id="press-total">330g</div>
     </div>
     <h2>フレンチプレスの抽出手順</h2>
-    <table class="press-table" aria-label="フレンチプレスの抽出手順">
-      <thead><tr><th scope="col">時刻</th><th scope="col">操作</th></tr></thead>
-      <tbody>
-        <tr><td>準備</td><td>予熱後、豆を入れ0gに</td></tr>
-        <tr><td>0:00</td><td><strong id="press-pour">330g</strong>を注ぎ、軽く混ぜる</td></tr>
-        <tr><td>4:00</td><td>表面の粉を優しく崩す</td></tr>
-        <tr><td>7:00</td><td>静かに下げて注ぐ</td></tr>
-      </tbody>
-    </table>
+    <div class="press-grid" role="table" aria-label="フレンチプレスの抽出手順">
+      <div class="press-grid-row press-grid-head" role="row">
+        <div role="columnheader">時刻</div><div role="columnheader">操作</div>
+      </div>
+      <div class="press-grid-row" role="row">
+        <div role="cell">準備</div><div role="cell">予熱後、豆を入れ0gに</div>
+      </div>
+      <div class="press-grid-row" role="row">
+        <div role="cell">0:00</div><div role="cell"><strong id="press-pour">330g</strong>を注ぎ、軽く混ぜる</div>
+      </div>
+      <div class="press-grid-row" role="row">
+        <div role="cell">4:00</div><div role="cell">表面の粉を優しく崩す</div>
+      </div>
+      <div class="press-grid-row" role="row">
+        <div role="cell">7:00</div><div role="cell">静かに下げて注ぐ</div>
+      </div>
+    </div>
   </section>
   <noscript><p class="error">自動計算にはJavaScriptが必要です。Safariなどで開いてください。</p></noscript>
 </main>

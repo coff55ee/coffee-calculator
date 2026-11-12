@@ -25,7 +25,6 @@ label{display:block;color:var(--muted);font-size:clamp(17px,3.7vw,21px);font-wei
 .summary{background:var(--soft);border-radius:20px;padding:19px 22px 20px;margin-top:24px}
 .summary-label{font-size:18px;color:var(--muted);margin-bottom:6px}
 .summary-value{font-size:clamp(38px,7vw,51px);font-weight:800;line-height:1.18;font-variant-numeric:tabular-nums}
-.secondary-info{font-size:15px;color:var(--muted);margin:9px 0 0;line-height:1.6}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;table-layout:fixed}
 th,td{padding:17px 4px;border-bottom:1px solid #dededb;font-size:clamp(15px,3.4vw,22px);white-space:nowrap}
 th{border-bottom:2px solid var(--border);font-weight:750;text-align:left}
@@ -79,7 +78,6 @@ tbody tr:last-child td{border-bottom:none}
     <div class="summary" aria-live="polite" aria-atomic="true">
       <div class="summary-label">総湯量｜粉湯比 1:16.5</div>
       <div class="summary-value" id="press-total">330g</div>
-      <div class="secondary-info" id="press-temp">推奨湯温：90℃　｜　挽き目：中粗挽き</div>
     </div>
     <h2>フレンチプレスの抽出手順</h2>
     <ol class="press-steps">
@@ -99,7 +97,6 @@ tbody tr:last-child td{border-bottom:none}
   var schedule=document.getElementById('schedule');
   var pressTotal=document.getElementById('press-total');
   var pressPour=document.getElementById('press-pour');
-  var pressTemp=document.getElementById('press-temp');
   var error=document.getElementById('inputError');
   var rows=Array.prototype.slice.call(schedule.querySelectorAll('tr'));
   var times=['0:00','0:40','1:20','2:00'];
@@ -128,7 +125,6 @@ tbody tr:last-child td{border-bottom:none}
     var water=r1(beans*16.5);
     pressTotal.textContent=gram(water);
     pressPour.textContent=gram(water);
-    pressTemp.textContent='推奨湯温：90℃　｜　挽き目：中粗挽き';
   }
   var tabs=[document.getElementById('tab-drip'),document.getElementById('tab-press')];
   var panels=[document.getElementById('panel-drip'),document.getElementById('panel-press')];

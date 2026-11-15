@@ -6,8 +6,13 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7f7f5">
 <title>コーヒー抽出計算機</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="コーヒー">
 <style>
-:root {color-scheme:light;--bg:#f7f7f5;--paper:#fff;--text:#131313;--muted:#696966;--border:#dddcd8;--soft:#f1f1ef;--accent:#474c41}
+:root {color-scheme:light;--bg:#f7f7f5;--paper:#fff;--text:#131313;--muted:#696966;--border:#dddcd8;--soft:#f1f1ef;--accent:#474c41;--hl:#eef1ea;--hl-line:#8f9f84}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;min-width:290px;background:var(--bg);color:var(--text);padding:14px 12px 36px;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
@@ -18,7 +23,7 @@ h3{font-size:19px;margin:24px 0 12px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--soft);padding:5px;border-radius:17px;margin-bottom:26px}
 .tab{appearance:none;border:0;border-radius:13px;background:transparent;color:var(--muted);font:inherit;font-size:clamp(15px,3.2vw,18px);font-weight:700;padding:14px 5px;cursor:pointer;min-height:48px}
 .tab[aria-selected="true"]{color:var(--text);background:#fff;box-shadow:0 1px 5px #00000013}
-.tab:focus-visible,input:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
+.tab:focus-visible,input:focus-visible,.btn:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
 label{display:block;color:var(--muted);font-size:clamp(17px,3.7vw,21px);font-weight:700;margin-bottom:13px}
 #beans{display:block;width:100%;height:71px;padding:0 25px;border:2px solid #d8d8d5;border-radius:100px;background:#fff;color:var(--text);font:inherit;font-size:27px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
 .field{margin:0 0 19px}
@@ -46,6 +51,21 @@ tbody tr:last-child td{border-bottom:none}
 .press-grid-row>[role]:last-child{white-space:normal;overflow-wrap:anywhere;word-break:normal}
 .press-grid-row>[role]:first-child{white-space:nowrap}
 @media(max-width:350px){.press-grid-row>[role]{font-size:14px;padding:14px 3px}}
+/* Brew timer: the current step is highlighted, finished steps are dimmed. */
+#schedule tr.is-current td,.press-grid-row.is-current{background:var(--hl);font-weight:750}
+#schedule tr.is-current td:first-child{box-shadow:inset 4px 0 0 var(--hl-line)}
+.press-grid-row.is-current{box-shadow:inset 4px 0 0 var(--hl-line)}
+#schedule tr.is-done td,.press-grid-row.is-done{color:#9a9a96}
+.timer{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:2;margin-top:26px;background:var(--accent);color:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 6px 20px #0000002a}
+.timer-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.timer-time{font-size:clamp(36px,9vw,50px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.timer-actions{display:flex;gap:8px;flex-shrink:0}
+.btn{appearance:none;border:0;border-radius:100px;font:inherit;font-size:16px;font-weight:750;min-height:46px;padding:0 14px;cursor:pointer;background:#ffffff26;color:#fff;white-space:nowrap}
+.btn.primary{background:#fff;color:var(--accent);min-width:88px}
+.timer-status{margin-top:10px;font-size:clamp(15px,3.6vw,18px);line-height:1.45;color:#eef0ea;min-height:1.45em}
+.timer-next{font-variant-numeric:tabular-nums;font-weight:750;color:#fff}
+@media(max-width:440px){.timer{padding:14px 14px}}
+@media(max-width:350px){.timer{padding:12px 10px}.timer-time{font-size:30px}.btn{padding:0 10px;font-size:15px}.btn.primary{min-width:72px}}
 </style>
 </head>
 <body>
@@ -91,22 +111,34 @@ tbody tr:last-child td{border-bottom:none}
       <div class="press-grid-row" role="row">
         <div role="cell">準備</div><div role="cell">予熱後、豆を入れ0gに</div>
       </div>
-      <div class="press-grid-row" role="row">
+      <div class="press-grid-row press-step" role="row">
         <div role="cell">0:00</div><div role="cell">お湯<strong id="press-pour">330g</strong>を注ぎ、軽く混ぜる</div>
       </div>
-      <div class="press-grid-row" role="row">
+      <div class="press-grid-row press-step" role="row">
         <div role="cell">4:00</div><div role="cell">表面の粉を優しく崩す</div>
       </div>
-      <div class="press-grid-row" role="row">
+      <div class="press-grid-row press-step" role="row">
         <div role="cell">7:00</div><div role="cell">静かに下げて注ぐ</div>
       </div>
     </div>
+  </section>
+
+  <section class="timer" aria-label="抽出タイマー">
+    <div class="timer-top">
+      <div class="timer-time" id="timer-time" role="timer" aria-live="off">0:00</div>
+      <div class="timer-actions">
+        <button class="btn primary" id="timer-start" type="button">スタート</button>
+        <button class="btn" id="timer-reset" type="button">リセット</button>
+      </div>
+    </div>
+    <div class="timer-status" id="timer-status" aria-live="polite"></div>
   </section>
   <noscript><p class="error">自動計算にはJavaScriptが必要です。Safariなどで開いてください。</p></noscript>
 </main>
 <script>
 (function () {
   'use strict';
+  var STORE_KEY='coffeeCalc.v1';
   var input=document.getElementById('beans');
   var dripTotal=document.getElementById('drip-total');
   var schedule=document.getElementById('schedule');
@@ -114,10 +146,23 @@ tbody tr:last-child td{border-bottom:none}
   var pressPour=document.getElementById('press-pour');
   var error=document.getElementById('inputError');
   var rows=Array.prototype.slice.call(schedule.querySelectorAll('tr'));
+  var pressRows=Array.prototype.slice.call(document.querySelectorAll('.press-step'));
   var times=['0:00','0:40','1:20','2:00'];
   var ratios=[.15,.40,.70,1];
+  var current={drip:[],press:0};
+
+  // Saved settings live only in this browser; every access is guarded because storage can be unavailable.
+  function loadSettings(){
+    try{var raw=localStorage.getItem(STORE_KEY);return raw?JSON.parse(raw)||{}:{};}catch(e){return {};}
+  }
+  function saveSettings(patch){
+    try{var s=loadSettings();for(var k in patch){s[k]=patch[k];}localStorage.setItem(STORE_KEY,JSON.stringify(s));}catch(e){}
+  }
+
   function r1(n){return Math.round((n + Number.EPSILON)*10)/10;}
   function gram(n){return (Math.abs(n-Math.round(n))<.00001?String(Math.round(n)):n.toFixed(1))+'g';}
+  function clock(sec){sec=Math.max(0,Math.floor(sec));return Math.floor(sec/60)+':'+('0'+sec%60).slice(-2);}
+
   function render(){
     var s=input.value.trim(), beans=Number(s), valid=s!==''&&Number.isFinite(beans)&&beans>=1&&beans<=100;
     error.hidden=valid;
@@ -125,9 +170,12 @@ tbody tr:last-child td{border-bottom:none}
     if(!valid){
       dripTotal.textContent='—';pressTotal.textContent='—';pressPour.textContent='—';
       rows.forEach(function(row){row.cells[2].textContent='—';row.cells[3].textContent='—';});
+      current={drip:[],press:0};
+      updateTimerView();
       return;
     }
-    var dripWater=r1(beans*15.5),last=0;
+    saveSettings({beans:s});
+    var dripWater=r1(beans*15.5),last=0,cum=[];
     dripTotal.textContent=gram(dripWater);
     for(var i=0;i<4;i++){
       var cumulative=i===3?dripWater:r1(dripWater*ratios[i]);
@@ -135,12 +183,119 @@ tbody tr:last-child td{border-bottom:none}
       rows[i].cells[1].textContent=times[i];
       rows[i].cells[2].textContent=gram(r1(cumulative-last));
       rows[i].cells[3].textContent=gram(cumulative);
+      cum.push(cumulative);
       last=cumulative;
     }
     var water=r1(beans*16.5);
     pressTotal.textContent=gram(water);
     pressPour.textContent=gram(water);
+    current={drip:cum,press:water};
+    updateTimerView();
   }
+
+  /* ---------- Brew timer ---------- */
+  var timeEl=document.getElementById('timer-time');
+  var statusEl=document.getElementById('timer-status');
+  var startBtn=document.getElementById('timer-start');
+  var resetBtn=document.getElementById('timer-reset');
+  var mode='drip';
+  var running=false,startedAt=0,carried=0,tickId=null,wakeLock=null;
+
+  var STEPS={
+    drip:[0,40,80,120],
+    press:[0,240,420]
+  };
+  function stepText(m,i){
+    if(m==='drip'){
+      var c=current.drip[i];
+      return (i+1)+'投目を注ぐ'+(c!=null?'（累計'+gram(c)+'まで）':'');
+    }
+    return ['お湯'+(current.press?gram(current.press):'')+'を注ぎ、軽く混ぜる','表面の粉を優しく崩す','静かに下げて注ぐ'][i];
+  }
+  function idleText(m){
+    if(m==='drip')return 'スタートと同時に1投目'+(current.drip[0]!=null?'（'+gram(current.drip[0])+'）':'')+'を注ぎます';
+    return '予熱して豆を入れたら、スタートと同時にお湯を注ぎます';
+  }
+  function elapsed(){return carried+(running?(Date.now()-startedAt)/1000:0);}
+  function stepIndex(m,sec){
+    var steps=STEPS[m],idx=-1;
+    for(var i=0;i<steps.length;i++){if(sec>=steps[i])idx=i;}
+    return idx;
+  }
+  function highlight(m,idx,active){
+    var list=m==='drip'?rows:pressRows;
+    list.forEach(function(el,i){
+      el.classList.toggle('is-current',active&&i===idx);
+      el.classList.toggle('is-done',active&&i<idx);
+    });
+  }
+  function clearHighlights(){highlight('drip',-1,false);highlight('press',-1,false);}
+
+  function updateTimerView(){
+    var sec=elapsed(),active=running||carried>0;
+    timeEl.textContent=clock(sec);
+    if(!active){
+      clearHighlights();
+      statusEl.textContent=idleText(mode);
+      return;
+    }
+    var steps=STEPS[mode],idx=stepIndex(mode,sec);
+    highlight(mode,idx,true);
+    var html=stepText(mode,idx);
+    if(idx<steps.length-1){
+      html+='<br><span class="timer-next">次まであと '+clock(Math.ceil(steps[idx+1]-sec))+'</span>';
+    }else if(mode==='drip'){
+      html+='<br><span class="timer-next">注ぎ終わり。落ち切ったら止めてください</span>';
+    }
+    statusEl.innerHTML=html;
+  }
+
+  function tick(){updateTimerView();}
+
+  function requestWake(){
+    try{
+      if('wakeLock' in navigator&&document.visibilityState==='visible'){
+        navigator.wakeLock.request('screen').then(function(l){wakeLock=l;}).catch(function(){});
+      }
+    }catch(e){}
+  }
+  function releaseWake(){try{if(wakeLock){wakeLock.release();}}catch(e){}wakeLock=null;}
+
+  function start(){
+    if(carried===0){
+      // Bring the schedule and the timer into view together when a brew starts.
+      try{document.querySelector('.timer').scrollIntoView({behavior:'smooth',block:'end'});}catch(e){}
+    }
+    startedAt=Date.now();running=true;
+    tickId=setInterval(tick,200);
+    startBtn.textContent='一時停止';
+    requestWake();
+    updateTimerView();
+  }
+  function pause(){
+    carried=elapsed();running=false;
+    clearInterval(tickId);tickId=null;
+    startBtn.textContent='再開';
+    releaseWake();
+    updateTimerView();
+  }
+  function reset(){
+    running=false;carried=0;
+    clearInterval(tickId);tickId=null;
+    startBtn.textContent='スタート';
+    releaseWake();
+    updateTimerView();
+  }
+  startBtn.addEventListener('click',function(){running?pause():start();});
+  resetBtn.addEventListener('click',reset);
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible'){
+      if(running){requestWake();}
+      updateTimerView();
+    }
+  });
+
+  /* ---------- Tabs ---------- */
   var tabs=[document.getElementById('tab-drip'),document.getElementById('tab-press')];
   var panels=[document.getElementById('panel-drip'),document.getElementById('panel-press')];
   function selectTab(which,shouldFocus){
@@ -150,12 +305,21 @@ tbody tr:last-child td{border-bottom:none}
       tabs[i].tabIndex=active?0:-1;
       panels[i].hidden=!active;
     }
+    var next=which===1?'press':'drip';
+    if(next!==mode){mode=next;reset();}
+    saveSettings({tab:mode});
     if(shouldFocus)tabs[which].focus();
   }
   tabs.forEach(function(tab,i){
     tab.addEventListener('click',function(){selectTab(i,false);});
     tab.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();selectTab((i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length,true);}});
   });
+
+  // Restore the last bean amount and method.
+  var saved=loadSettings();
+  if(saved.beans){var b=Number(saved.beans);if(Number.isFinite(b)&&b>=1&&b<=100)input.value=saved.beans;}
+  if(saved.tab==='press')selectTab(1,false);
+
   input.addEventListener('input',render);
   input.addEventListener('change',render);
   render();

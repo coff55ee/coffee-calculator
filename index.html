@@ -23,12 +23,18 @@ h3{font-size:19px;margin:24px 0 12px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--soft);padding:5px;border-radius:17px;margin-bottom:26px}
 .tab{appearance:none;border:0;border-radius:13px;background:transparent;color:var(--muted);font:inherit;font-size:clamp(15px,3.2vw,18px);font-weight:700;padding:14px 5px;cursor:pointer;min-height:48px}
 .tab[aria-selected="true"]{color:var(--text);background:#fff;box-shadow:0 1px 5px #00000013}
-.tab:focus-visible,input:focus-visible,.btn:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
+.tab:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.btn:focus-visible{outline:3px solid #8f9f84;outline-offset:2px}
 label{display:block;color:var(--muted);font-size:clamp(17px,3.7vw,21px);font-weight:700;margin-bottom:13px}
 #beans{display:block;width:100%;height:71px;padding:0 25px;border:2px solid #d8d8d5;border-radius:100px;background:#fff;color:var(--text);font:inherit;font-size:27px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
 .field{margin:0 0 19px}
 .summary{background:var(--soft);border-radius:20px;padding:19px 22px 20px;margin-top:24px}
-.summary-label{font-size:18px;color:var(--muted);margin-bottom:6px}
+.summary-label{font-size:18px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ratio{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:inherit;font-weight:400;color:inherit}
+.ratio select{appearance:none;-webkit-appearance:none;font:inherit;font-size:17px;font-weight:700;color:var(--text);background:#fff;border:1.5px solid #d3d3cf;border-radius:100px;padding:7px 30px 7px 13px;min-height:40px;background-image:linear-gradient(45deg,transparent 50%,#696966 50%),linear-gradient(135deg,#696966 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.memo{margin-top:24px}
+.memo label{font-size:16px;margin-bottom:8px}
+.memo textarea{display:block;width:100%;border:1.5px solid #d8d8d5;border-radius:16px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.5;color:var(--text);background:#fff;resize:vertical}
+.memo-note{margin:6px 2px 0;font-size:13px;color:var(--muted)}
 .summary-value{font-size:clamp(38px,7vw,51px);font-weight:800;line-height:1.18;font-variant-numeric:tabular-nums}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;table-layout:fixed}
 th,td{padding:17px 4px;border-bottom:1px solid #dededb;font-size:clamp(15px,3.4vw,22px);white-space:nowrap}
@@ -83,7 +89,7 @@ tbody tr:last-child td{border-bottom:none}
 
   <section id="panel-drip" role="tabpanel" aria-labelledby="tab-drip">
     <div class="summary" aria-live="polite" aria-atomic="true">
-      <div class="summary-label">総湯量｜粉湯比 1:15.5</div>
+      <div class="summary-label"><span>総湯量</span><label class="ratio" for="ratio-drip">粉湯比 <select id="ratio-drip" aria-label="ハンドドリップの粉湯比"><option value="14">1:14</option><option value="14.5">1:14.5</option><option value="15">1:15</option><option value="15.5" selected>1:15.5（標準）</option><option value="16">1:16</option><option value="16.5">1:16.5</option><option value="17">1:17</option></select></label></div>
       <div class="summary-value" id="drip-total">310g</div>
     </div>
     <h2>4投の抽出スケジュール</h2>
@@ -100,7 +106,7 @@ tbody tr:last-child td{border-bottom:none}
 
   <section id="panel-press" role="tabpanel" aria-labelledby="tab-press" hidden>
     <div class="summary" aria-live="polite" aria-atomic="true">
-      <div class="summary-label">総湯量｜粉湯比 1:16.5</div>
+      <div class="summary-label"><span>総湯量</span><label class="ratio" for="ratio-press">粉湯比 <select id="ratio-press" aria-label="フレンチプレスの粉湯比"><option value="15">1:15</option><option value="15.5">1:15.5</option><option value="16">1:16</option><option value="16.5" selected>1:16.5（標準）</option><option value="17">1:17</option><option value="17.5">1:17.5</option></select></label></div>
       <div class="summary-value" id="press-total">330g</div>
     </div>
     <h2>フレンチプレスの抽出手順</h2>
@@ -133,6 +139,16 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <div class="timer-status" id="timer-status" aria-live="polite"></div>
   </section>
+    <div class="memo" id="memo-box-drip">
+      <label for="memo-drip">メモ（湯温・挽き目・豆など）</label>
+      <textarea id="memo-drip" rows="3" placeholder="例：88℃、中細挽き、ケニア深煎り。酸味なし・甘み強め"></textarea>
+      <p class="memo-note">このiPhone（ブラウザ）にだけ保存されます</p>
+    </div>
+    <div class="memo" id="memo-box-press" hidden>
+      <label for="memo-press">メモ（湯温・挽き目・豆など）</label>
+      <textarea id="memo-press" rows="3" placeholder="例：沸騰直後、粗挽き。4分で崩してから7分"></textarea>
+      <p class="memo-note">このiPhone（ブラウザ）にだけ保存されます</p>
+    </div>
   <noscript><p class="error">自動計算にはJavaScriptが必要です。Safariなどで開いてください。</p></noscript>
 </main>
 <script>
@@ -149,6 +165,10 @@ tbody tr:last-child td{border-bottom:none}
   var pressRows=Array.prototype.slice.call(document.querySelectorAll('.press-step'));
   var times=['0:00','0:40','1:20','2:00'];
   var ratios=[.15,.40,.70,1];
+  var ratioDrip=document.getElementById('ratio-drip');
+  var ratioPress=document.getElementById('ratio-press');
+  var memoDrip=document.getElementById('memo-drip');
+  var memoPress=document.getElementById('memo-press');
   var current={drip:[],press:0};
 
   // Saved settings live only in this browser; every access is guarded because storage can be unavailable.
@@ -175,7 +195,7 @@ tbody tr:last-child td{border-bottom:none}
       return;
     }
     saveSettings({beans:s});
-    var dripWater=r1(beans*15.5),last=0,cum=[];
+    var dripWater=r1(beans*Number(ratioDrip.value)),last=0,cum=[];
     dripTotal.textContent=gram(dripWater);
     for(var i=0;i<4;i++){
       var cumulative=i===3?dripWater:r1(dripWater*ratios[i]);
@@ -186,7 +206,7 @@ tbody tr:last-child td{border-bottom:none}
       cum.push(cumulative);
       last=cumulative;
     }
-    var water=r1(beans*16.5);
+    var water=r1(beans*Number(ratioPress.value));
     pressTotal.textContent=gram(water);
     pressPour.textContent=gram(water);
     current={drip:cum,press:water};
@@ -213,8 +233,8 @@ tbody tr:last-child td{border-bottom:none}
     return ['お湯'+(current.press?gram(current.press):'')+'を注ぎ、軽く混ぜる','表面の粉を優しく崩す','静かに下げて注ぐ'][i];
   }
   function idleText(m){
-    if(m==='drip')return 'スタートと同時に1投目'+(current.drip[0]!=null?'（'+gram(current.drip[0])+'）':'')+'を注ぎます';
-    return '予熱して豆を入れたら、スタートと同時にお湯を注ぎます';
+    if(m==='drip')return 'スタートで1投目'+(current.drip[0]!=null?'（'+gram(current.drip[0])+'）':'')+'を注ぎます';
+    return '豆を入れたら、スタートでお湯を注ぎます';
   }
   function elapsed(){return carried+(running?(Date.now()-startedAt)/1000:0);}
   function stepIndex(m,sec){
@@ -306,6 +326,8 @@ tbody tr:last-child td{border-bottom:none}
       panels[i].hidden=!active;
     }
     var next=which===1?'press':'drip';
+    document.getElementById('memo-box-drip').hidden=which===1;
+    document.getElementById('memo-box-press').hidden=which!==1;
     if(next!==mode){mode=next;reset();}
     saveSettings({tab:mode});
     if(shouldFocus)tabs[which].focus();
@@ -319,6 +341,15 @@ tbody tr:last-child td{border-bottom:none}
   var saved=loadSettings();
   if(saved.beans){var b=Number(saved.beans);if(Number.isFinite(b)&&b>=1&&b<=100)input.value=saved.beans;}
   if(saved.tab==='press')selectTab(1,false);
+
+  function pickRatio(sel,val){if(val&&Array.prototype.some.call(sel.options,function(o){return o.value===String(val);}))sel.value=String(val);}
+  pickRatio(ratioDrip,saved.ratioDrip);pickRatio(ratioPress,saved.ratioPress);
+  ratioDrip.addEventListener('change',function(){saveSettings({ratioDrip:ratioDrip.value});render();});
+  ratioPress.addEventListener('change',function(){saveSettings({ratioPress:ratioPress.value});render();});
+  memoDrip.value=typeof saved.memoDrip==='string'?saved.memoDrip:'';
+  memoPress.value=typeof saved.memoPress==='string'?saved.memoPress:'';
+  memoDrip.addEventListener('input',function(){saveSettings({memoDrip:memoDrip.value});});
+  memoPress.addEventListener('input',function(){saveSettings({memoPress:memoPress.value});});
 
   input.addEventListener('input',render);
   input.addEventListener('change',render);

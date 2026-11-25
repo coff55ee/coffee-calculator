@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f4efe6">
-<meta name="description" content="豆の重さから、ハンドドリップ4投とフレンチプレスの湯量と手順を計算し、タイマーで注ぐタイミングを案内します。">
+<meta name="description" content="豆の重さから、ハンドドリップ4投・4:6メソッド・フレンチプレスの湯量と手順を計算し、タイマーで注ぐタイミングを案内します。味の直し方と抽出記録も残せます。">
 <title>コーヒー抽出計算機</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
@@ -74,11 +74,60 @@ tbody tr:last-child td{border-bottom:none}
 .btn.primary{background:var(--accent-ink);color:var(--accent);min-width:88px}
 .timer-status{margin-top:9px;font-size:clamp(15px,3.6vw,17px);line-height:1.45;color:#f1e4d3;min-height:1.45em}
 .timer-next{font-variant-numeric:tabular-nums;font-weight:750;color:var(--accent-ink)}
-.memo{margin-top:28px}
-.memo label{font-size:15px;margin-bottom:8px}
-.memo textarea{display:block;width:100%;border:1.5px solid var(--field-line);border-radius:12px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.5;color:var(--text);background:var(--field);resize:vertical}
-.memo-note{margin:6px 2px 0;font-size:13px;color:var(--muted)}
 @media(max-width:350px){.timer{padding:12px 10px}.timer-time{font-size:30px}.btn{padding:0 10px;font-size:15px}.btn.primary{min-width:72px}}
+/* Three methods share one tab row; labels shrink a little on narrow phones. */
+.tabs{grid-template-columns:repeat(3,1fr)}
+.tab{font-size:clamp(13px,3.6vw,17px);padding:12px 2px;line-height:1.25}
+.method-note{margin:8px 0 0;font-size:14px;line-height:1.55;color:var(--muted)}
+/* Taste fix: one symptom in, one change out. */
+.section{margin-top:36px}
+.section h2{margin:0 0 6px}
+.lead{margin:0 0 14px;font-size:15px;line-height:1.6;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;font:inherit;font-size:15px;font-weight:700;color:var(--text);background:var(--field);border:1.5px solid var(--field-line);border-radius:100px;padding:9px 14px;min-height:42px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip:focus-visible,.link-btn:focus-visible,.seg input:focus-visible+span,select:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.advice{margin-top:14px;border-left:4px solid var(--hl-line);background:var(--hl);padding:14px 16px;line-height:1.6}
+.advice dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:15px}
+.advice dt{color:var(--muted);font-weight:700;white-space:nowrap}
+.advice dd{margin:0}
+.advice .next{font-size:18px;font-weight:800}
+.advice-note{margin:10px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+.link-btn{appearance:none;border:0;background:none;padding:6px 0;margin-top:6px;font:inherit;font-size:15px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* Brew log */
+.prev{margin:0 0 14px;padding:12px 14px;border:1.5px dashed var(--line-strong);font-size:15px;line-height:1.6}
+.prev strong{display:block;font-size:13px;color:var(--muted);margin-bottom:2px}
+.log-form{display:grid;gap:14px}
+.log-form label,.log-form legend{font-size:15px;margin:0 0 6px;color:var(--muted);font-weight:700;padding:0}
+.log-form input[type=text],.log-form input[type=number],.log-form select,.log-form textarea{display:block;width:100%;border:1.5px solid var(--field-line);border-radius:12px;padding:11px 13px;font:inherit;font-size:16px;color:var(--text);background:var(--field)}
+.log-form textarea{line-height:1.5;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.auto{font-size:14px;color:var(--muted);margin:0}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+.taste{display:grid;gap:8px}
+.taste-row{display:grid;grid-template-columns:3.2em 1fr;align-items:center;gap:8px}
+.taste-row>span{font-weight:700;font-size:15px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.seg label{margin:0;position:relative}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;text-align:center;padding:8px 0;border:1.5px solid var(--field-line);border-radius:10px;background:var(--field);font-size:14px;font-weight:700;color:var(--muted);cursor:pointer}
+.seg input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seg input[value=""]:checked+span{background:var(--accent-soft);border-color:var(--accent-soft);color:var(--muted)}
+.save-btn{appearance:none;border:0;border-radius:100px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:17px;font-weight:800;min-height:50px;cursor:pointer}
+.save-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.saved-msg{margin:0;font-size:14px;color:var(--accent);font-weight:700;min-height:1.4em}
+.log-list{list-style:none;margin:22px 0 0;padding:0;border-top:2px solid var(--line-strong)}
+.log-item{padding:14px 2px;border-bottom:1px solid var(--line);line-height:1.55;font-size:15px}
+.log-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.log-date{font-weight:800}
+.log-method{color:var(--muted);font-size:14px}
+.log-meta{margin:2px 0 0}
+.log-taste{margin:2px 0 0;font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+.log-next{margin:4px 0 0;font-weight:700}
+.log-del{appearance:none;border:0;background:none;font:inherit;font-size:14px;color:var(--error);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.log-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
+.empty{color:var(--muted);font-size:15px;padding:14px 2px;margin:0}
+.store-note{margin:14px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
 </style>
 </head>
 <body>
@@ -86,6 +135,7 @@ tbody tr:last-child td{border-bottom:none}
   <h1>コーヒー抽出計算機</h1>
   <div class="tabs" role="tablist" aria-label="抽出方法を選択">
     <button class="tab" id="tab-drip" role="tab" aria-controls="panel-drip" aria-selected="true" type="button">ハンドドリップ</button>
+    <button class="tab" id="tab-f46" role="tab" aria-controls="panel-f46" aria-selected="false" tabindex="-1" type="button">4:6メソッド</button>
     <button class="tab" id="tab-press" role="tab" aria-controls="panel-press" aria-selected="false" tabindex="-1" type="button">フレンチプレス</button>
   </div>
   <div class="field">
@@ -112,6 +162,25 @@ tbody tr:last-child td{border-bottom:none}
         <tr><td>4投目</td><td>2:00</td><td>93g</td><td>310g</td></tr>
       </tbody>
     </table>
+  </section>
+
+  <section id="panel-f46" role="tabpanel" aria-labelledby="tab-f46" hidden>
+    <div class="summary" aria-live="polite" aria-atomic="true">
+      <div class="summary-label">総湯量｜粉湯比 1:15・粗挽き</div>
+      <div class="summary-value" id="f46-total">300g</div>
+    </div>
+    <h2>5投の抽出スケジュール</h2>
+    <table aria-label="4:6メソッドの抽出スケジュール">
+      <thead><tr><th scope="col">投湯</th><th scope="col">開始</th><th scope="col">注ぐ量</th><th scope="col">累計</th></tr></thead>
+      <tbody id="schedule-f46">
+        <tr><td>1投目</td><td>0:00</td><td>60g</td><td>60g</td></tr>
+        <tr><td>2投目</td><td>0:45</td><td>60g</td><td>120g</td></tr>
+        <tr><td>3投目</td><td>1:30</td><td>60g</td><td>180g</td></tr>
+        <tr><td>4投目</td><td>2:10</td><td>60g</td><td>240g</td></tr>
+        <tr><td>5投目</td><td>2:40</td><td>60g</td><td>300g</td></tr>
+      </tbody>
+    </table>
+    <p class="method-note">粕谷哲氏が考案した方法です。前半2投（全体の4割）で酸味と甘みの方向を、後半3投（6割）で濃さを決めるという考え方に基づいています。</p>
   </section>
 
   <section id="panel-press" role="tabpanel" aria-labelledby="tab-press" hidden>
@@ -149,16 +218,72 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <div class="timer-status" id="timer-status" aria-live="polite"></div>
   </section>
-    <div class="memo" id="memo-box-drip">
-      <label for="memo-drip">メモ（湯温・挽き目・豆など）</label>
-      <textarea id="memo-drip" rows="3" placeholder="例：88℃、中細挽き、ケニア深煎り。酸味なし・甘み強め"></textarea>
-      <p class="memo-note">このiPhone（ブラウザ）にだけ保存されます</p>
+
+  <section class="section" aria-labelledby="fix-title">
+    <h2 id="fix-title">味を直す</h2>
+    <p class="lead">気になった味を1つ選ぶと、次に変える条件を1つだけ出します。一度に複数を変えると、どの変更で味が変わったのか分からなくなるためです。</p>
+    <div class="chips" id="fix-chips" role="group" aria-label="気になった味"></div>
+    <div class="advice" id="fix-advice" aria-live="polite" hidden></div>
+  </section>
+
+  <section class="section" aria-labelledby="log-title">
+    <h2 id="log-title">抽出記録</h2>
+    <p class="lead">淹れた条件と味を残しておくと、前回から何を変えて、味がどう変わったかを比べられます。空欄があっても保存できます。</p>
+    <div class="prev" id="log-prev" hidden></div>
+    <form class="log-form" id="log-form" novalidate>
+      <p class="auto" id="log-auto"></p>
+      <div>
+        <label for="log-bean">豆（産地・銘柄・お店など）</label>
+        <input type="text" id="log-bean" autocomplete="off" placeholder="例：ケニア・ニエリ">
+      </div>
+      <div class="row2">
+        <div>
+          <label for="log-process">精製</label>
+          <select id="log-process">
+            <option value="">—</option><option>ウォッシュド</option><option>ナチュラル</option><option>ハニー</option><option>スマトラ式</option><option>その他</option>
+          </select>
+        </div>
+        <div>
+          <label for="log-roast">焙煎度</label>
+          <select id="log-roast">
+            <option value="">—</option><option>浅煎り</option><option>中煎り</option><option>中深煎り</option><option>深煎り</option>
+          </select>
+        </div>
+      </div>
+      <div class="row2">
+        <div>
+          <label for="log-temp">湯温（℃）</label>
+          <input type="number" id="log-temp" inputmode="numeric" min="60" max="100" step="1" placeholder="例：88">
+        </div>
+        <div>
+          <label for="log-grind">挽き目</label>
+          <select id="log-grind">
+            <option value="">—</option><option>細挽き</option><option>中細挽き</option><option>中挽き</option><option>中粗挽き</option><option>粗挽き</option>
+          </select>
+        </div>
+      </div>
+      <fieldset>
+        <legend>味の印象（1弱い〜3強い）</legend>
+        <div class="taste" id="log-taste"></div>
+      </fieldset>
+      <div>
+        <label for="log-next">次に変えること</label>
+        <input type="text" id="log-next" autocomplete="off" placeholder="「味を直す」で選ぶと入ります">
+      </div>
+      <div>
+        <label for="log-note">メモ</label>
+        <textarea id="log-note" rows="2" placeholder="例：甘くておいしかった"></textarea>
+      </div>
+      <button class="save-btn" type="submit">この内容で記録する</button>
+      <p class="saved-msg" id="log-saved" role="status"></p>
+    </form>
+    <ul class="log-list" id="log-list" aria-label="これまでの記録"></ul>
+    <div class="log-tools">
+      <button class="link-btn" id="log-copy" type="button">記録をまとめてコピー</button>
+      <span class="saved-msg" id="log-copied" role="status"></span>
     </div>
-    <div class="memo" id="memo-box-press" hidden>
-      <label for="memo-press">メモ（湯温・挽き目・豆など）</label>
-      <textarea id="memo-press" rows="3" placeholder="例：沸騰直後、粗挽き。4分で崩してから7分"></textarea>
-      <p class="memo-note">このiPhone（ブラウザ）にだけ保存されます</p>
-    </div>
+    <p class="store-note">記録はこのiPhone（ブラウザ）にだけ保存されます。ホーム画面のアイコンから開くと、いつも同じ記録が出ます。</p>
+  </section>
   <noscript><p class="error">自動計算にはJavaScriptが必要です。Safariなどで開いてください。</p></noscript>
 </main>
 <script>
@@ -166,59 +291,68 @@ tbody tr:last-child td{border-bottom:none}
   'use strict';
   var STORE_KEY='coffeeCalc.v1';
   var input=document.getElementById('beans');
-  var dripTotal=document.getElementById('drip-total');
-  var schedule=document.getElementById('schedule');
-  var pressTotal=document.getElementById('press-total');
-  var pressPour=document.getElementById('press-pour');
   var error=document.getElementById('inputError');
-  var rows=Array.prototype.slice.call(schedule.querySelectorAll('tr'));
+  var pressPour=document.getElementById('press-pour');
   var pressRows=Array.prototype.slice.call(document.querySelectorAll('.press-step'));
-  var times=['0:00','0:40','1:20','2:00'];
-  var ratios=[.15,.40,.70,1];
-  var memoDrip=document.getElementById('memo-drip');
-  var memoPress=document.getElementById('memo-press');
-  var current={drip:[],press:0};
+
+  // One description per brewing method drives the tables, the timer and the log.
+  var METHODS={
+    drip:{label:'ハンドドリップ',ratio:15.5,steps:[0,40,80,120],shares:[.15,.40,.70,1],
+      total:document.getElementById('drip-total'),rows:Array.prototype.slice.call(document.querySelectorAll('#schedule tr'))},
+    f46:{label:'4:6メソッド',ratio:15,steps:[0,45,90,130,160],shares:[.2,.4,.6,.8,1],
+      total:document.getElementById('f46-total'),rows:Array.prototype.slice.call(document.querySelectorAll('#schedule-f46 tr'))},
+    press:{label:'フレンチプレス',ratio:16.5,steps:[0,240,420],
+      total:document.getElementById('press-total'),rows:pressRows}
+  };
+  var ORDER=['drip','f46','press'];
+  var current={drip:[],f46:[],press:0,beans:null};
 
   // Saved settings live only in this browser; every access is guarded because storage can be unavailable.
   function loadSettings(){
     try{var raw=localStorage.getItem(STORE_KEY);return raw?JSON.parse(raw)||{}:{};}catch(e){return {};}
   }
   function saveSettings(patch){
-    try{var s=loadSettings();for(var k in patch){s[k]=patch[k];}localStorage.setItem(STORE_KEY,JSON.stringify(s));}catch(e){}
+    try{var s=loadSettings();for(var k in patch){s[k]=patch[k];}localStorage.setItem(STORE_KEY,JSON.stringify(s));return true;}catch(e){return false;}
   }
 
   function r1(n){return Math.round((n + Number.EPSILON)*10)/10;}
   function gram(n){return (Math.abs(n-Math.round(n))<.00001?String(Math.round(n)):n.toFixed(1))+'g';}
   function clock(sec){sec=Math.max(0,Math.floor(sec));return Math.floor(sec/60)+':'+('0'+sec%60).slice(-2);}
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function fillPours(m,water){
+    var M=METHODS[m],last=0,cum=[];
+    for(var i=0;i<M.rows.length;i++){
+      var c=i===M.rows.length-1?water:r1(water*M.shares[i]);
+      M.rows[i].cells[0].textContent=(i+1)+'投目';
+      M.rows[i].cells[1].textContent=clock(M.steps[i]);
+      M.rows[i].cells[2].textContent=gram(r1(c-last));
+      M.rows[i].cells[3].textContent=gram(c);
+      cum.push(c);last=c;
+    }
+    return cum;
+  }
 
   function render(){
     var s=input.value.trim(), beans=Number(s), valid=s!==''&&Number.isFinite(beans)&&beans>=1&&beans<=100;
     error.hidden=valid;
     error.textContent=valid?'':'豆量は1〜100gで入力してください。';
     if(!valid){
-      dripTotal.textContent='—';pressTotal.textContent='—';pressPour.textContent='—';
-      rows.forEach(function(row){row.cells[2].textContent='—';row.cells[3].textContent='—';});
-      current={drip:[],press:0};
-      updateTimerView();
+      ORDER.forEach(function(m){METHODS[m].total.textContent='—';});
+      pressPour.textContent='—';
+      ['drip','f46'].forEach(function(m){METHODS[m].rows.forEach(function(row){row.cells[2].textContent='—';row.cells[3].textContent='—';});});
+      current={drip:[],f46:[],press:0,beans:null};
+      updateTimerView();renderAuto();
       return;
     }
     saveSettings({beans:s});
-    var dripWater=r1(beans*15.5),last=0,cum=[];
-    dripTotal.textContent=gram(dripWater);
-    for(var i=0;i<4;i++){
-      var cumulative=i===3?dripWater:r1(dripWater*ratios[i]);
-      rows[i].cells[0].textContent=(i+1)+'投目';
-      rows[i].cells[1].textContent=times[i];
-      rows[i].cells[2].textContent=gram(r1(cumulative-last));
-      rows[i].cells[3].textContent=gram(cumulative);
-      cum.push(cumulative);
-      last=cumulative;
-    }
-    var water=r1(beans*16.5);
-    pressTotal.textContent=gram(water);
-    pressPour.textContent=gram(water);
-    current={drip:cum,press:water};
-    updateTimerView();
+    var dw=r1(beans*METHODS.drip.ratio),fw=r1(beans*METHODS.f46.ratio),pw=r1(beans*METHODS.press.ratio);
+    METHODS.drip.total.textContent=gram(dw);
+    METHODS.f46.total.textContent=gram(fw);
+    METHODS.press.total.textContent=gram(pw);
+    pressPour.textContent=gram(pw);
+    current={drip:fillPours('drip',dw),f46:fillPours('f46',fw),press:pw,beans:beans};
+    updateTimerView();renderAuto();
   }
 
   /* ---------- Brew timer ---------- */
@@ -229,35 +363,29 @@ tbody tr:last-child td{border-bottom:none}
   var mode='drip';
   var running=false,startedAt=0,carried=0,tickId=null,wakeLock=null;
 
-  var STEPS={
-    drip:[0,40,80,120],
-    press:[0,240,420]
-  };
   function stepText(m,i){
-    if(m==='drip'){
-      var c=current.drip[i];
-      return (i+1)+'投目を注ぐ'+(c!=null?'（累計'+gram(c)+'まで）':'');
-    }
-    return ['お湯'+(current.press?gram(current.press):'')+'を注ぎ、軽く混ぜる','表面の粉を優しく崩す','静かに下げて注ぐ'][i];
+    if(m==='press')return ['お湯'+(current.press?gram(current.press):'')+'を注ぎ、軽く混ぜる','表面の粉を優しく崩す','静かに下げて注ぐ'][i];
+    var c=current[m][i];
+    return (i+1)+'投目を注ぐ'+(c!=null?'（累計'+gram(c)+'まで）':'');
   }
   function idleText(m){
-    if(m==='drip')return 'スタートで1投目'+(current.drip[0]!=null?'（'+gram(current.drip[0])+'）':'')+'を注ぎます';
-    return '豆を入れたら、スタートでお湯を注ぎます';
+    if(m==='press')return '豆を入れたら、スタートでお湯を注ぎます';
+    var c=current[m][0];
+    return 'スタートで1投目'+(c!=null?'（'+gram(c)+'）':'')+'を注ぎます';
   }
   function elapsed(){return carried+(running?(Date.now()-startedAt)/1000:0);}
   function stepIndex(m,sec){
-    var steps=STEPS[m],idx=-1;
+    var steps=METHODS[m].steps,idx=-1;
     for(var i=0;i<steps.length;i++){if(sec>=steps[i])idx=i;}
     return idx;
   }
   function highlight(m,idx,active){
-    var list=m==='drip'?rows:pressRows;
-    list.forEach(function(el,i){
+    METHODS[m].rows.forEach(function(el,i){
       el.classList.toggle('is-current',active&&i===idx);
       el.classList.toggle('is-done',active&&i<idx);
     });
   }
-  function clearHighlights(){highlight('drip',-1,false);highlight('press',-1,false);}
+  function clearHighlights(){ORDER.forEach(function(m){highlight(m,-1,false);});}
 
   function updateTimerView(){
     var sec=elapsed(),active=running||carried>0;
@@ -267,18 +395,16 @@ tbody tr:last-child td{border-bottom:none}
       statusEl.textContent=idleText(mode);
       return;
     }
-    var steps=STEPS[mode],idx=stepIndex(mode,sec);
+    var steps=METHODS[mode].steps,idx=stepIndex(mode,sec);
     highlight(mode,idx,true);
-    var html=stepText(mode,idx);
+    var html=esc(stepText(mode,idx));
     if(idx<steps.length-1){
       html+='<br><span class="timer-next">次まであと '+clock(Math.ceil(steps[idx+1]-sec))+'</span>';
-    }else if(mode==='drip'){
+    }else if(mode!=='press'){
       html+='<br><span class="timer-next">注ぎ終わり。落ち切ったら止めてください</span>';
     }
     statusEl.innerHTML=html;
   }
-
-  function tick(){updateTimerView();}
 
   function requestWake(){
     try{
@@ -295,7 +421,7 @@ tbody tr:last-child td{border-bottom:none}
       try{document.querySelector('.timer').scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'end'});}catch(e){}
     }
     startedAt=Date.now();running=true;
-    tickId=setInterval(tick,200);
+    tickId=setInterval(updateTimerView,200);
     startBtn.textContent='一時停止';
     requestWake();
     updateTimerView();
@@ -324,8 +450,8 @@ tbody tr:last-child td{border-bottom:none}
   });
 
   /* ---------- Tabs ---------- */
-  var tabs=[document.getElementById('tab-drip'),document.getElementById('tab-press')];
-  var panels=[document.getElementById('panel-drip'),document.getElementById('panel-press')];
+  var tabs=ORDER.map(function(m){return document.getElementById('tab-'+m);});
+  var panels=ORDER.map(function(m){return document.getElementById('panel-'+m);});
   function selectTab(which,shouldFocus){
     for(var i=0;i<tabs.length;i++){
       var active=i===which;
@@ -333,11 +459,10 @@ tbody tr:last-child td{border-bottom:none}
       tabs[i].tabIndex=active?0:-1;
       panels[i].hidden=!active;
     }
-    var next=which===1?'press':'drip';
-    document.getElementById('memo-box-drip').hidden=which===1;
-    document.getElementById('memo-box-press').hidden=which!==1;
+    var next=ORDER[which];
     if(next!==mode){mode=next;reset();}
     saveSettings({tab:mode});
+    renderAuto();
     if(shouldFocus)tabs[which].focus();
   }
   tabs.forEach(function(tab,i){
@@ -345,19 +470,156 @@ tbody tr:last-child td{border-bottom:none}
     tab.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();selectTab((i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length,true);}});
   });
 
-  // Restore the last bean amount and method.
+  /* ---------- Taste fix (from the guide's "味を直す" table) ---------- */
+  var FIXES=[
+    {key:'sour',label:'酸味が尖る',cause:'抽出不足の可能性',next:'挽き目を少し細かくする'},
+    {key:'bitter',label:'苦く、口が乾く',cause:'過抽出や流れのムラ',next:'挽き目を少し粗くする'},
+    {key:'thin',label:'薄く、水っぽい',cause:'濃度が足りない',next:'比率を濃くする（豆を1〜2g増やし、湯は前回の総湯量で止める）'},
+    {key:'heavy',label:'濃く、重すぎる',cause:'濃度が高い',next:'比率を薄くする（豆を1〜2g減らし、湯は前回の総湯量まで注ぐ）'},
+    {key:'flat',label:'甘みが弱い',cause:'抽出の不均一、豆の特性',next:'蒸らしを丁寧にする（または中煎りの豆を選ぶ）'},
+    {key:'aroma',label:'香りが弱い',cause:'焙煎・鮮度・抽出条件',next:'淹れる直前に挽く'}
+  ];
+  var chipsEl=document.getElementById('fix-chips');
+  var adviceEl=document.getElementById('fix-advice');
+  var chosenFix=null;
+  FIXES.forEach(function(f){
+    var b=document.createElement('button');
+    b.type='button';b.className='chip';b.textContent=f.label;b.setAttribute('aria-pressed','false');b.dataset.key=f.key;
+    b.addEventListener('click',function(){chooseFix(chosenFix&&chosenFix.key===f.key?null:f);});
+    chipsEl.appendChild(b);
+  });
+  function chooseFix(f){
+    chosenFix=f;
+    Array.prototype.forEach.call(chipsEl.children,function(b){b.setAttribute('aria-pressed',f&&b.dataset.key===f.key?'true':'false');});
+    if(!f){adviceEl.hidden=true;adviceEl.innerHTML='';return;}
+    adviceEl.innerHTML='<dl><dt>考えられる原因</dt><dd>'+esc(f.cause)+'（仮説）</dd><dt>次に試すこと</dt><dd class="next">'+esc(f.next)+'</dd></dl>'+
+      '<button class="link-btn" type="button" id="fix-to-log">これを記録の「次に変えること」に入れる</button>'+
+      '<p class="advice-note">「酸っぱい＝抽出不足」「苦い＝過抽出」は仮説です。豆の特徴、水質、抽出のむらにも左右されます。</p>';
+    adviceEl.hidden=false;
+    document.getElementById('fix-to-log').addEventListener('click',function(){
+      nextEl.value=f.label+' → '+f.next;
+      try{nextEl.scrollIntoView({behavior:'auto',block:'center'});}catch(e){}
+      nextEl.focus({preventScroll:true});
+    });
+  }
+
+  /* ---------- Brew log ---------- */
+  var LOG_MAX=300;
+  var form=document.getElementById('log-form');
+  var beanEl=document.getElementById('log-bean'),processEl=document.getElementById('log-process'),roastEl=document.getElementById('log-roast');
+  var tempEl=document.getElementById('log-temp'),grindEl=document.getElementById('log-grind'),nextEl=document.getElementById('log-next'),noteEl=document.getElementById('log-note');
+  var autoEl=document.getElementById('log-auto'),listEl=document.getElementById('log-list'),prevEl=document.getElementById('log-prev');
+  var savedEl=document.getElementById('log-saved'),copiedEl=document.getElementById('log-copied');
+  var TASTES=[['acid','酸'],['bitter','苦'],['sweet','甘'],['body','コク']];
+  var tasteEl=document.getElementById('log-taste');
+  TASTES.forEach(function(t){
+    var row=document.createElement('div');row.className='taste-row';
+    var opts=['—','1','2','3'].map(function(v,i){
+      return '<label><input type="radio" name="t-'+t[0]+'" value="'+(i===0?'':v)+'"'+(i===0?' checked':'')+' aria-label="'+t[1]+' '+(i===0?'未記入':v)+'"><span>'+v+'</span></label>';
+    }).join('');
+    row.innerHTML='<span>'+t[1]+'</span><div class="seg">'+opts+'</div>';
+    tasteEl.appendChild(row);
+  });
+
+  function getLogs(){var l=loadSettings().logs;return Array.isArray(l)?l:[];}
+  function setLogs(l){return saveSettings({logs:l.slice(0,LOG_MAX)});}
+  function fmtDate(ts){var d=new Date(ts);return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+('0'+d.getMinutes()).slice(-2);}
+  function metaLine(r){
+    return [r.beans?gram(r.beans):'',r.temp?r.temp+'℃':'',r.grind||'',r.roast||'',r.process||''].filter(Boolean).join('・');
+  }
+  function tasteLine(r){
+    if(!r.taste)return '';
+    var parts=TASTES.filter(function(t){return r.taste[t[0]];}).map(function(t){return t[1]+r.taste[t[0]];});
+    return parts.join('　');
+  }
+  function renderAuto(){
+    autoEl.textContent='抽出方法：'+METHODS[mode].label+'　豆：'+(current.beans?gram(current.beans):'—')+'（今の入力から自動で入ります）';
+  }
+  function renderLogs(){
+    var logs=getLogs();
+    if(!logs.length){
+      listEl.innerHTML='<li class="empty">まだ記録はありません。</li>';
+      prevEl.hidden=true;
+      return;
+    }
+    listEl.innerHTML=logs.map(function(r){
+      var meta=metaLine(r),taste=tasteLine(r);
+      return '<li class="log-item"><div class="log-head"><span class="log-date">'+esc(fmtDate(r.at))+'</span><span class="log-method">'+esc(r.method||'')+'</span></div>'+
+        (r.bean?'<p class="log-meta"><strong>'+esc(r.bean)+'</strong></p>':'')+
+        (meta?'<p class="log-meta">'+esc(meta)+'</p>':'')+
+        (taste?'<p class="log-taste">'+esc(taste)+'</p>':'')+
+        (r.note?'<p class="log-meta">'+esc(r.note)+'</p>':'')+
+        (r.next?'<p class="log-next">次に変えること：'+esc(r.next)+'</p>':'')+
+        '<button class="log-del" type="button" data-id="'+esc(r.id)+'">削除</button></li>';
+    }).join('');
+    var p=logs[0];
+    prevEl.innerHTML='<strong>前回の記録（'+esc(fmtDate(p.at))+'）</strong>'+esc([p.bean,metaLine(p)].filter(Boolean).join('　'))+
+      (p.next?'<br>次に変えること：<b>'+esc(p.next)+'</b>':'');
+    prevEl.hidden=false;
+  }
+  listEl.addEventListener('click',function(e){
+    var b=e.target.closest('.log-del');if(!b)return;
+    // Two taps to delete, so a stray touch does not lose a record.
+    if(b.dataset.armed!=='1'){b.dataset.armed='1';b.textContent='もう一度押すと削除します';setTimeout(function(){if(b.isConnected){b.dataset.armed='';b.textContent='削除';}},4000);return;}
+    setLogs(getLogs().filter(function(r){return r.id!==b.dataset.id;}));
+    renderLogs();
+  });
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var taste={};
+    TASTES.forEach(function(t){var c=form.querySelector('input[name="t-'+t[0]+'"]:checked');if(c&&c.value)taste[t[0]]=Number(c.value);});
+    var t=Number(tempEl.value);
+    var rec={id:String(Date.now())+Math.random().toString(36).slice(2,6),at:Date.now(),method:METHODS[mode].label,beans:current.beans,
+      bean:beanEl.value.trim(),process:processEl.value,roast:roastEl.value,temp:(tempEl.value!==''&&Number.isFinite(t))?t:null,grind:grindEl.value,
+      taste:taste,next:nextEl.value.trim(),note:noteEl.value.trim()};
+    var ok=setLogs([rec].concat(getLogs()));
+    // Keep the bean, process, roast, temperature and grind for the next brew; clear what describes this cup.
+    noteEl.value='';nextEl.value='';
+    TASTES.forEach(function(t){var z=form.querySelector('input[name="t-'+t[0]+'"][value=""]');if(z)z.checked=true;});
+    chooseFix(null);
+    savedEl.textContent=ok?'記録しました。':'保存できませんでした（ブラウザの設定で保存が止まっている可能性があります）。';
+    setTimeout(function(){savedEl.textContent='';},3000);
+    renderLogs();
+  });
+  document.getElementById('log-copy').addEventListener('click',function(){
+    var logs=getLogs();
+    var text=logs.map(function(r){
+      return [fmtDate(r.at)+' '+(r.method||''),r.bean,metaLine(r),tasteLine(r),r.note,r.next?'次に変えること：'+r.next:''].filter(Boolean).join('\n');
+    }).join('\n\n');
+    function done(msg){copiedEl.textContent=msg;setTimeout(function(){copiedEl.textContent='';},3000);}
+    if(!logs.length){done('記録がありません');return;}
+    try{navigator.clipboard.writeText(text).then(function(){done('コピーしました');},function(){done('コピーできませんでした');});}catch(err){done('コピーできませんでした');}
+  });
+
+  // Restore the last bean amount, method and the bean details used last time.
   var saved=loadSettings();
   if(saved.beans){var b=Number(saved.beans);if(Number.isFinite(b)&&b>=1&&b<=100)input.value=saved.beans;}
-  if(saved.tab==='press')selectTab(1,false);
-
-  memoDrip.value=typeof saved.memoDrip==='string'?saved.memoDrip:'';
-  memoPress.value=typeof saved.memoPress==='string'?saved.memoPress:'';
-  memoDrip.addEventListener('input',function(){saveSettings({memoDrip:memoDrip.value});});
-  memoPress.addEventListener('input',function(){saveSettings({memoPress:memoPress.value});});
+  var tabIdx=ORDER.indexOf(saved.tab);
+  if(tabIdx>0)selectTab(tabIdx,false);
+  // Older versions kept free-text notes per method; carry them into the log once.
+  if(!saved.memoMigrated){
+    var old=[];
+    if(typeof saved.memoPress==='string'&&saved.memoPress.trim())old.push({m:'フレンチプレス',t:saved.memoPress.trim()});
+    if(typeof saved.memoDrip==='string'&&saved.memoDrip.trim())old.push({m:'ハンドドリップ',t:saved.memoDrip.trim()});
+    if(old.length){
+      var now=Date.now();
+      setLogs(old.map(function(o,i){return {id:'memo'+i+now,at:now-i,method:o.m,note:'（以前のメモ）'+o.t,taste:{}};}).concat(getLogs()));
+    }
+    saveSettings({memoMigrated:true});
+  }
+  var lastLog=getLogs()[0];
+  if(lastLog){
+    if(lastLog.bean)beanEl.value=lastLog.bean;
+    if(lastLog.process)processEl.value=lastLog.process;
+    if(lastLog.roast)roastEl.value=lastLog.roast;
+    if(lastLog.temp)tempEl.value=lastLog.temp;
+    if(lastLog.grind)grindEl.value=lastLog.grind;
+  }
 
   input.addEventListener('input',render);
   input.addEventListener('change',render);
   render();
+  renderLogs();
 })();
 </script>
 </body>
